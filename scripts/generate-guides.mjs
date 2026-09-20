@@ -29,6 +29,12 @@ function section(s) {
   return `<section id="${escape(s.id)}"><h2>${escape(s.title)}</h2>${(s.paragraphs || []).map(p => `<p>${escape(p)}</p>`).join('')}${s.bullets ? `<ul>${s.bullets.map(b => `<li>${escape(b)}</li>`).join('')}</ul>` : ''}${s.table ? `<div class="table-wrap" tabindex="0" role="region" aria-label="${escape(s.title)}"><table><thead><tr>${s.table.headers.map(h => `<th scope="col">${escape(h)}</th>`).join('')}</tr></thead><tbody>${s.table.rows.map(r => `<tr>${r.map(cell => `<td>${escape(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : ''}${s.codeKey ? `<div class="code-label">quickstart.mjs · Node.js 18+</div><pre tabindex="0" aria-label="JavaScript example"><code>${escape(example)}</code></pre>` : ''}</section>`;
 }
 
+function advertisement(lang, unit, sidebar = false) {
+  const label = lang === 'zh' ? '广告' : 'Advertisement';
+  const block = `<div class="ad-placement ${unit === 'short' ? 'ad-after-content' : ''}"><span class="ad-label">${label}</span><div class="ad-slot" data-ad-unit="${unit}" aria-label="${label}"></div></div>`;
+  return sidebar ? `<aside class="ad-sidebar" aria-label="${label}">${block}</aside>` : block;
+}
+
 function document(lang, article) {
   const c = copy[lang];
   const p = article?.[lang];
@@ -50,15 +56,15 @@ function document(lang, article) {
 <meta property="og:type" content="${p ? 'article' : 'website'}"><meta property="og:title" content="${escape(title)}">
 <meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${canonical}"><meta property="og:site_name" content="Jev Hub">
 <meta name="twitter:card" content="summary"><meta name="twitter:title" content="${escape(title)}"><meta name="twitter:description" content="${escape(description)}">
-<link rel="stylesheet" href="/guides.css"><script type="application/ld+json">${json(schema)}</script>
+<link rel="stylesheet" href="/guides.css"><link rel="stylesheet" href="/ads.css"><script defer src="/ads.js"></script><script type="application/ld+json">${json(schema)}</script>
 ${analytics}
 </head><body>
 <a class="skip" href="#main">${c.skip}</a>
 <header class="site-header"><div class="header-inner"><a class="brand" href="/">&gt;_ Jev <span>Hub</span></a><nav aria-label="${c.guides}"><a href="${url(lang)}">${c.guides}</a><a href="https://docs.typesafe.ai/">${c.official} ↗</a></nav><div class="languages"><a href="${url('en', slug)}" lang="en" hreflang="en" ${lang === 'en' ? 'aria-current="page"' : ''}>EN</a><a href="${url('zh', slug)}" lang="zh-CN" hreflang="zh-CN" ${lang === 'zh' ? 'aria-current="page"' : ''}>中文</a></div></div></header>
-<main id="main" class="shell">
+<main id="main" class="shell guide-shell">
 <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">${c.home}</a><span aria-hidden="true">/</span><a href="${url(lang)}">${c.guides}</a>${p ? `<span aria-hidden="true">/</span><span>${escape(p.category)}</span>` : ''}</nav>
 <div class="article-heading"><p class="eyebrow">JEV / ${escape(p?.category || c.guides)}</p><h1>${escape(title)}</h1><p class="intro">${escape(p?.intro || c.hubIntro)}</p><p class="meta">${c.checked} <time datetime="${reviewed}">${reviewed}</time> · Jev Hub</p></div>
-${p ? `<div class="article-layout"><aside><nav class="toc" aria-label="${c.contents}"><p>${c.contents}</p>${p.sections.map(s => `<a href="#${escape(s.id)}">${escape(s.title)}</a>`).join('')}<a href="#faq">${c.faq}</a><a href="#sources">${c.sources}</a></nav></aside><article><div class="answer"><h2>${c.answer}</h2><p>${escape(p.answer)}</p></div>${p.sections.map(section).join('')}<section id="faq"><h2>${c.faq}</h2>${p.faq.map(f => `<details><summary>${escape(f.q)}</summary><p>${escape(f.a)}</p></details>`).join('')}</section><section id="sources" class="sources"><h2>${c.sources}</h2><p>${c.notice}</p><ul>${article.sources.map(s => `<li><a href="${escape(s.url)}">${escape(s.label)} ↗</a></li>`).join('')}</ul></section></article></div><section class="related"><h2>${c.related}</h2>${cards(lang, slug)}</section>` : `${cards(lang)}<div class="hub-note"><h2>${lang === 'zh' ? '第一次接触 Jev？' : 'New to Jev?'}</h2><p>${lang === 'zh' ? '先了解模型和三种决策类型，再根据你的任务选读指南。' : 'Start with the model overview and its three decision types, then pick a guide for your task.'}</p><a href="/#overview">${lang === 'zh' ? '查看模型介绍' : 'Explore the model overview'} →</a></div>`}
+${p ? `<div class="article-layout"><aside><nav class="toc" aria-label="${c.contents}"><p>${c.contents}</p>${p.sections.map(s => `<a href="#${escape(s.id)}">${escape(s.title)}</a>`).join('')}<a href="#faq">${c.faq}</a><a href="#sources">${c.sources}</a></nav></aside><article><div class="answer"><h2>${c.answer}</h2><p>${escape(p.answer)}</p></div>${p.sections.map(section).join('')}<section id="faq"><h2>${c.faq}</h2>${p.faq.map(f => `<details><summary>${escape(f.q)}</summary><p>${escape(f.a)}</p></details>`).join('')}</section><section id="sources" class="sources"><h2>${c.sources}</h2><p>${c.notice}</p><ul>${article.sources.map(s => `<li><a href="${escape(s.url)}">${escape(s.label)} ↗</a></li>`).join('')}</ul></section>${advertisement(lang, 'short')}</article>${advertisement(lang, 'tall', true)}</div><section class="related"><h2>${c.related}</h2>${cards(lang, slug)}</section>` : `<div class="guide-hub-layout"><div>${cards(lang)}<div class="hub-note"><h2>${lang === 'zh' ? '第一次接触 Jev？' : 'New to Jev?'}</h2><p>${lang === 'zh' ? '先了解模型和三种决策类型，再根据你的任务选读指南。' : 'Start with the model overview and its three decision types, then pick a guide for your task.'}</p><a href="/#overview">${lang === 'zh' ? '查看模型介绍' : 'Explore the model overview'} →</a></div>${advertisement(lang, 'short')}</div>${advertisement(lang, 'tall', true)}</div>`}
 </main><footer><div class="shell"><a class="brand" href="/">&gt;_ Jev Hub</a><p>${c.independent}</p><a href="${url(lang)}">${c.guides}</a> · <a href="/sitemap.xml">Sitemap</a></div></footer>
 </body></html>`;
 }

@@ -9,6 +9,7 @@ import VideoWall from '../sections/VideoWall'
 import Faq from '../sections/Faq'
 import Footer from '../sections/Footer'
 import Guides from '../sections/Guides'
+import AdPlacement from '../components/AdPlacement'
 
 export default function Home() {
   return (
@@ -16,6 +17,8 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <div className="home-content-layout">
+        <div className="home-content">
         <Overview />
         <Primitives />
         <Advantages />
@@ -24,6 +27,12 @@ export default function Home() {
         <Cases />
         <VideoWall />
         <Faq />
+        <AdPlacement unit="short" />
+        </div>
+        <aside className="ad-sidebar home-sidebar" aria-label="Advertisement / 广告">
+          <AdPlacement unit="tall" />
+        </aside>
+        </div>
       </main>
       <Footer />
     </div>
