@@ -9,6 +9,8 @@ const example = await read('content/examples/quickstart.txt');
 const template = await read('index.html');
 const analytics = template.match(/<!-- Google tag \(gtag\.js\) -->[\s\S]*?<\/script>\s*<script>[\s\S]*?<\/script>/)?.[0];
 if (!analytics) throw new Error('Missing shared Google Analytics tag in index.html');
+const iconMetadata = template.match(/<!-- Site icons -->[\s\S]*?<!-- \/Site icons -->/)?.[0];
+if (!iconMetadata) throw new Error('Missing shared site icon metadata in index.html');
 const origin = 'https://jevtypesafe.online';
 // Change only when the articles and their sources have actually been reviewed.
 const reviewed = '2026-09-20';
@@ -57,6 +59,7 @@ function document(lang, article) {
 <meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${canonical}"><meta property="og:site_name" content="Jev Hub">
 <meta name="twitter:card" content="summary"><meta name="twitter:title" content="${escape(title)}"><meta name="twitter:description" content="${escape(description)}">
 <link rel="stylesheet" href="/guides.css"><link rel="stylesheet" href="/ads.css"><script defer src="/ads.js"></script><script type="application/ld+json">${json(schema)}</script>
+${iconMetadata}
 ${analytics}
 </head><body>
 <a class="skip" href="#main">${c.skip}</a>
