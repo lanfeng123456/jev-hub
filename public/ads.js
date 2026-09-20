@@ -21,7 +21,7 @@
     frame.setAttribute('frameborder', '0');
     // Keep navigation initiated by an ad inside a new tab, not the content page.
     frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');
-    frame.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex"><style>html,body{margin:0;padding:0;width:160px;height:${unit.height}px;overflow:hidden;background:transparent}</style></head><body><script>var atOptions = ${JSON.stringify({ key: unit.key, format: 'iframe', height: unit.height, width: 160, params: {} })};<\/script><script src="https://www.highrevenueformat.com/${unit.key}/invoke.js"><\/script></body></html>`;
+    frame.src = `/ad-placements/${unit.key}.html`;
     slot.append(frame);
     pending.delete(slot);
     observer?.unobserve(slot);
