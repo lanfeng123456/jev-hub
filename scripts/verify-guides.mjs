@@ -7,14 +7,15 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = path.join(root, 'dist');
 const articles = JSON.parse(await readFile(path.join(root, 'content/guides.json'), 'utf8'));
 const origin = 'https://jevtypesafe.online';
-const paths = ['/', ...['', '/zh'].flatMap(prefix => [`${prefix}/guides/`, ...articles.map(a => `${prefix}/guides/${a.slug}/`)])];
+const guidePaths = ['', '/zh'].flatMap(prefix => [`${prefix}/guides/`, ...articles.map(a => `${prefix}/guides/${a.slug}/`)]);
+const paths = ['/', '/en/', ...guidePaths];
 const sitemap = await readFile(path.join(dist, 'sitemap.xml'), 'utf8');
 const locations = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(m => m[1]);
 assert.deepEqual(new Set(locations), new Set(paths.map(p => origin + p)));
 assert.equal(locations.length, paths.length);
 const titles = new Set();
 
-for (const route of paths.slice(1)) {
+for (const route of guidePaths) {
   const html = await readFile(path.join(dist, route, 'index.html'), 'utf8');
   assert.equal((html.match(/<h1>/g) || []).length, 1, `${route}: one H1`);
   const title = html.match(/<title>(.*?)<\/title>/)?.[1];
@@ -70,4 +71,4 @@ assert.equal(output.refundProbability, .95);
 assert.equal(output.urgency, .2);
 await assert.rejects(() => run({ env: {} }, () => { throw new Error('Must not call fetch'); }, console), /Set TYPESAFE_API_KEY/);
 await assert.rejects(() => run({ env: { TYPESAFE_API_KEY: 'test-only' } }, async () => ({ ok: false, status: 401 }), console), /HTTP 401/);
-console.log(`PASS: ${paths.length - 1} static pages, canonical/hreflang, schema, internal links, anchors, GA, sitemap, and mock API example.`);
+console.log(`PASS: ${guidePaths.length} static guide pages, canonical/hreflang, schema, internal links, anchors, GA, sitemap, and mock API example.`);

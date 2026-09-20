@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/generate-icons.mjs && node scripts/generate-guides.mjs && vite",
-    "build": "node scripts/generate-icons.mjs && node scripts/generate-guides.mjs && tsc -b && vite build && node scripts/verify-icons.mjs",
+    "build": "node scripts/generate-icons.mjs && node scripts/generate-guides.mjs && tsc -b && vite build && node scripts/verify-icons.mjs && node scripts/verify-home-seo.mjs",
     "generate:icons": "node scripts/generate-icons.mjs",
     "lint": "eslint .",
     "verify:guides": "node scripts/verify-guides.mjs",
     "verify:icons": "node scripts/verify-icons.mjs",
+    "verify:seo": "node scripts/verify-home-seo.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

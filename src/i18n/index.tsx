@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -14,33 +15,23 @@ import { en } from './en'
 // then add 'ja' to Lang, SUPPORTED_LANGS, DICTS and LANG_LABELS.
 export type Lang = 'zh' | 'en'
 
+// Shared with the language switcher; safe to retain alongside the provider.
+// eslint-disable-next-line react-refresh/only-export-components
 export const SUPPORTED_LANGS: readonly Lang[] = ['zh', 'en']
 
 const DICTS: Record<Lang, Messages> = { zh, en }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const LANG_LABELS: Record<Lang, string> = { zh: '中文', en: 'EN' }
 
-const STORAGE_KEY = 'jev-lang'
 const DEFAULT_LANG: Lang = 'zh'
 
 // ── Detection ──────────────────────────────────────────────────────────
-// Manual choice (localStorage) wins. Otherwise: zh* → Chinese, everything
-// else → English for now. If detection is unavailable, fall back to Chinese.
+// The URL owns the language so crawlers and visitors see the same localized page.
+// `/` is Chinese and `/en/` is English; unknown paths fall back to Chinese.
 function detectInitialLang(): Lang {
-  try {
-    const saved = window.localStorage.getItem(STORAGE_KEY)
-    if (saved && (SUPPORTED_LANGS as readonly string[]).includes(saved)) {
-      return saved as Lang
-    }
-  } catch {
-    // localStorage unavailable — continue with detection
-  }
-  const navLang =
-    typeof navigator !== 'undefined'
-      ? navigator.language || (navigator.languages && navigator.languages[0]) || ''
-      : ''
-  if (!navLang) return DEFAULT_LANG
-  return navLang.toLowerCase().startsWith('zh') ? 'zh' : 'en'
+  if (typeof window === 'undefined') return DEFAULT_LANG
+  return window.location.pathname === '/en' || window.location.pathname.startsWith('/en/') ? 'en' : 'zh'
 }
 
 // ── Context ────────────────────────────────────────────────────────────
@@ -53,16 +44,12 @@ interface I18nContextValue {
 const I18nContext = createContext<I18nContextValue | null>(null)
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(detectInitialLang)
+  const [lang] = useState<Lang>(detectInitialLang)
 
-  const setLang = (next: Lang) => {
-    setLangState(next)
-    try {
-      window.localStorage.setItem(STORAGE_KEY, next)
-    } catch {
-      // ignore persistence failures
-    }
-  }
+  const setLang = useCallback((next: Lang) => {
+    if (next === lang) return
+    window.location.assign(`${next === 'en' ? '/en/' : '/'}${window.location.hash}`)
+  }, [lang])
 
   const t = DICTS[lang]
 
@@ -72,11 +59,13 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     document.title = t.meta.title
   }, [t])
 
-  const value = useMemo(() => ({ lang, setLang, t }), [lang, t])
+  const value = useMemo(() => ({ lang, setLang, t }), [lang, setLang, t])
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>
 }
 
+// The hook and provider intentionally share one context instance.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useI18n(): I18nContextValue {
   const ctx = useContext(I18nContext)
   if (!ctx) throw new Error('useI18n must be used within <LanguageProvider>')

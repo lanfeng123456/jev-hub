@@ -60,7 +60,7 @@ for (const size of ['192x192', '512x512']) {
 }
 
 const htmlFiles = await listHtml(distDir);
-invariant(htmlFiles.length === 11, `Expected 11 indexable HTML pages, found ${htmlFiles.length}`);
+invariant(htmlFiles.length === 12, `Expected 12 indexable HTML pages, found ${htmlFiles.length}`);
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, 'utf8');
   const page = path.relative(distDir, htmlFile);

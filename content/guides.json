@@ -30,6 +30,7 @@
     },
     "zh": {
       "title": "Jev API 使用教程：TypeSafe 接入与首次请求",
+      "seoTitle": "Jev API 教程：TypeSafe 接入与首次请求",
       "description": "从 TypeSafe 官方文档出发接入 Jev API：服务端 JavaScript 示例、API Key 配置、Choice、Score、Noul 返回值，以及常见报错排查。",
       "category": "开发者指南",
       "intro": "Jev API 会根据输入状态回答结构化问题。建议从一个边界清晰的业务判断开始，先观察返回值，再把它接入自动化流程。本教程以客服工单为例，解释官方接口如何落到实际代码中。",
@@ -58,6 +59,7 @@
     ],
     "en": {
       "title": "Jev AI Download, Waitlist and Official Access Guide",
+      "seoTitle": "Jev AI Download, Waitlist and Access Guide",
       "description": "Looking for a Jev AI download or waitlist? Find the official TypeSafe access route, understand SDK versus model downloads, and prepare your first test.",
       "category": "Access guide",
       "intro": "Searching for ‘Jev AI download’ can lead to several different expectations: a chat application, local model weights, or developer tools. The documented TypeSafe workflow is a hosted decision API, with a console and SDKs for developers.",
@@ -121,6 +123,7 @@
     },
     "zh": {
       "title": "Jev 价格与费用：TypeSafe API Token 成本计算",
+      "seoTitle": "Jev API 价格：Token 成本计算",
       "description": "解释 Jev API 输入 Token 价格、输出免费与免费使用的区别，用计算示例估算调用费用，并核对重试、人工复核和系统运行成本。",
       "category": "成本指南",
       "intro": "低 Token 单价很容易被误读为永久免费，或固定每次调用收费。本页把官方输入单价换算成可理解的业务估算，并说明估算没有包含哪些费用。",
@@ -149,6 +152,7 @@
     ],
     "en": {
       "title": "Jev Benchmarks Explained: Speed, Cost and Limitations",
+      "seoTitle": "Jev Benchmarks: Speed, Cost and Limits",
       "description": "Read TypeSafe Jev benchmark claims in context: workflow comparisons, latency, typed outputs, confidence, and a practical checklist for your own evaluation.",
       "category": "Evaluation guide",
       "intro": "A large speedup is meaningful only after you know the task, baseline and output requirements. Jev benchmarks concern structured decisions inside workflows. They do not establish that Jev replaces a general-purpose assistant for every task.",

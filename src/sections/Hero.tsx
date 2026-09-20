@@ -73,6 +73,9 @@ export default function Hero() {
         </p>
         <h1 className="text-7xl font-black tracking-tighter md:text-9xl">
           <span className="text-jev glow-jev">Jev</span>
+          <span className="mt-4 block text-2xl font-semibold tracking-tight text-foreground md:text-4xl">
+            {t.hero.heading}
+          </span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-xl font-medium md:text-2xl">
           {t.hero.tagline}

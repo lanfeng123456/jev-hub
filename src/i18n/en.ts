@@ -7,7 +7,7 @@ import type { Messages } from './zh'
 // and brand names (DCVC, Vercel, Browser Use, ...).
 export const en: Messages = {
   meta: {
-    title: 'Jev Hub — System One Decision Model Guide',
+    title: 'Jev AI Guide: TypeSafe System One Decision Model | Jev Hub',
     htmlLang: 'en',
   },
   nav: {
@@ -24,6 +24,7 @@ export const en: Messages = {
     cta: 'Early Access',
   },
   hero: {
+    heading: 'System One Decision Model',
     badge: '2026-09-15 · TypeSafe AI exits stealth',
     tagline: 'The model that never writes a single word',
     leadA: "TypeSafe AI's first ",

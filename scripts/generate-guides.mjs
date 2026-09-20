@@ -43,6 +43,7 @@ function document(lang, article) {
   const slug = article?.slug || '';
   const canonical = origin + url(lang, slug);
   const title = p?.title || c.hubTitle;
+  const seoTitle = p?.seoTitle || title;
   const description = p?.description || c.hubDescription;
   const crumbs = [{ '@type': 'ListItem', position: 1, name: c.home, item: `${origin}/` }, { '@type': 'ListItem', position: 2, name: c.guides, item: origin + url(lang) }];
   if (p) crumbs.push({ '@type': 'ListItem', position: 3, name: title, item: canonical });
@@ -50,14 +51,14 @@ function document(lang, article) {
   return `<!doctype html>
 <html lang="${c.lang}"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escape(title)} | Jev Hub</title><meta name="description" content="${escape(description)}">
+<title>${escape(seoTitle)} | Jev Hub</title><meta name="description" content="${escape(description)}">
 <link rel="canonical" href="${canonical}">
 <link rel="alternate" hreflang="en" href="${origin + url('en', slug)}">
 <link rel="alternate" hreflang="zh-CN" href="${origin + url('zh', slug)}">
 <link rel="alternate" hreflang="x-default" href="${origin + url('en', slug)}">
-<meta property="og:type" content="${p ? 'article' : 'website'}"><meta property="og:title" content="${escape(title)}">
+<meta property="og:type" content="${p ? 'article' : 'website'}"><meta property="og:title" content="${escape(seoTitle)}">
 <meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${canonical}"><meta property="og:site_name" content="Jev Hub">
-<meta name="twitter:card" content="summary"><meta name="twitter:title" content="${escape(title)}"><meta name="twitter:description" content="${escape(description)}">
+<meta name="twitter:card" content="summary"><meta name="twitter:title" content="${escape(seoTitle)}"><meta name="twitter:description" content="${escape(description)}">
 <link rel="stylesheet" href="/guides.css"><link rel="stylesheet" href="/ads.css"><script defer src="/ads.js"></script><script type="application/ld+json">${json(schema)}</script>
 ${iconMetadata}
 ${analytics}
@@ -72,7 +73,7 @@ ${p ? `<div class="article-layout"><aside class="toc-sidebar"><nav class="toc" a
 </body></html>`;
 }
 
-const paths = ['/'];
+const paths = ['/', '/en/'];
 for (const lang of ['en', 'zh']) {
   for (const article of [null, ...articles]) {
     const route = url(lang, article?.slug);
@@ -83,4 +84,4 @@ for (const lang of ['en', 'zh']) {
   }
 }
 await writeFile(path.join(root, 'public/sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths.map(p => `  <url><loc>${origin}${p}</loc></url>`).join('\n')}\n</urlset>\n`);
-console.log(`Generated ${paths.length - 1} static guide pages; sitemap contains ${paths.length} URLs.`);
+console.log(`Generated ${paths.length - 2} static guide pages; sitemap contains ${paths.length} URLs.`);

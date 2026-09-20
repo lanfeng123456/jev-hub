@@ -3,7 +3,7 @@ import quickstartExample from '../../content/examples/quickstart.txt?raw'
 // `en.ts` (and any future language such as `ja.ts`) must satisfy `Messages`.
 export const zh = {
   meta: {
-    title: 'Jev 决策模型中文站',
+    title: 'Jev AI 中文指南：TypeSafe System One 决策模型',
     htmlLang: 'zh-CN',
   },
   nav: {
@@ -20,6 +20,7 @@ export const zh = {
     cta: '早期访问',
   },
   hero: {
+    heading: 'System One 决策模型',
     badge: '2026-09-15 · TypeSafe AI 结束隐身发布',
     tagline: '不写一个字的大模型',
     leadA: 'TypeSafe AI 首个 ',

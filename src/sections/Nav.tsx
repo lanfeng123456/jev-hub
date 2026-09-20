@@ -4,7 +4,7 @@ import { LANG_LABELS, SUPPORTED_LANGS, useI18n } from '../i18n'
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
-  const { lang, setLang, t } = useI18n()
+  const { lang, t } = useI18n()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -54,11 +54,10 @@ export default function Nav() {
             className="flex items-center rounded-md border border-border p-0.5 font-mono text-xs"
           >
             {SUPPORTED_LANGS.map((l) => (
-              <button
+              <a
                 key={l}
-                type="button"
-                onClick={() => setLang(l)}
-                aria-pressed={lang === l}
+                href={l === 'en' ? '/en/' : '/'}
+                aria-current={lang === l ? 'page' : undefined}
                 className={`rounded px-2 py-1 transition-colors ${
                   lang === l
                     ? 'bg-jev font-semibold text-background'
@@ -66,7 +65,7 @@ export default function Nav() {
                 }`}
               >
                 {LANG_LABELS[l]}
-              </button>
+              </a>
             ))}
           </div>
           <a
