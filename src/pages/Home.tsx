@@ -27,8 +27,10 @@ export default function Home() {
         <Cases />
         <VideoWall />
         <Faq />
-        <AdPlacement unit="short" />
         </div>
+        <aside className="ad-left home-sidebar" aria-label="Advertisement / 广告">
+          <AdPlacement unit="short" />
+        </aside>
         <aside className="ad-sidebar home-sidebar" aria-label="Advertisement / 广告">
           <AdPlacement unit="tall" />
         </aside>
