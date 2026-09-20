@@ -9,6 +9,8 @@ const example = await read('content/examples/quickstart.txt');
 const template = await read('index.html');
 const analytics = template.match(/<!-- Google tag \(gtag\.js\) -->[\s\S]*?<\/script>\s*<script>[\s\S]*?<\/script>/)?.[0];
 if (!analytics) throw new Error('Missing shared Google Analytics tag in index.html');
+const clarity = template.match(/<!-- Microsoft Clarity -->[\s\S]*?<!-- \/Microsoft Clarity -->/)?.[0];
+if (!clarity) throw new Error('Missing shared Microsoft Clarity tag in index.html');
 const iconMetadata = template.match(/<!-- Site icons -->[\s\S]*?<!-- \/Site icons -->/)?.[0];
 if (!iconMetadata) throw new Error('Missing shared site icon metadata in index.html');
 const origin = 'https://jevtypesafe.online';
@@ -62,6 +64,7 @@ function document(lang, article) {
 <link rel="stylesheet" href="/guides.css"><link rel="stylesheet" href="/ads.css"><script defer src="/ads.js"></script><script type="application/ld+json">${json(schema)}</script>
 ${iconMetadata}
 ${analytics}
+${clarity}
 </head><body>
 <a class="skip" href="#main">${c.skip}</a>
 <header class="site-header"><div class="header-inner"><a class="brand" href="/">&gt;_ Jev <span>Hub</span></a><nav aria-label="${c.guides}"><a href="${url(lang)}">${c.guides}</a><a href="https://docs.typesafe.ai/">${c.official} ↗</a></nav><div class="languages"><a href="${url('en', slug)}" lang="en" hreflang="en" ${lang === 'en' ? 'aria-current="page"' : ''}>EN</a><a href="${url('zh', slug)}" lang="zh-CN" hreflang="zh-CN" ${lang === 'zh' ? 'aria-current="page"' : ''}>中文</a></div></div></header>
