@@ -32,6 +32,15 @@
     : null;
 
   function scan() {
+    const nativeSlot = document.querySelector('[data-native-ad]');
+    if (nativeSlot && !nativeSlot.dataset.adLoaded) {
+      nativeSlot.dataset.adLoaded = 'true';
+      const script = document.createElement('script');
+      script.async = true;
+      script.setAttribute('data-cfasync', 'false');
+      script.src = 'https://pl31423357.profitableratecpmnetwork.com/d93522345fe7fd01c719b5d879c19138/invoke.js';
+      nativeSlot.before(script);
+    }
     for (const slot of document.querySelectorAll('[data-ad-unit]')) {
       if (slot.dataset.adLoaded || pending.has(slot)) continue;
       pending.add(slot);

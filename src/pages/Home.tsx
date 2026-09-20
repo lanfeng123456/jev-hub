@@ -10,6 +10,7 @@ import Faq from '../sections/Faq'
 import Footer from '../sections/Footer'
 import Guides from '../sections/Guides'
 import AdPlacement from '../components/AdPlacement'
+import HeroAd from '../components/HeroAd'
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <HeroAd />
         <div className="home-content-layout">
         <div className="home-content">
         <Overview />

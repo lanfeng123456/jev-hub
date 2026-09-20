@@ -8,6 +8,8 @@
 .ad-sidebar{display:none}
 .home-content-layout{max-width:1440px;margin:0 auto}
 .home-content{min-width:0}
+.hero-ad{width:min(1160px,calc(100% - 48px));margin:24px auto;padding:20px 0;border-top:1px solid #293441;border-bottom:1px solid #293441}
+.hero-ad [data-native-ad]{width:100%;min-width:0;min-height:100px;overflow-x:auto}
 .article-layout>.ad-left{grid-column:1/-1}
 @media(min-width:1280px) and (min-height:720px){
   .ad-sidebar{display:block;min-width:0}
