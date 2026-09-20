@@ -45,6 +45,9 @@ export default function Nav() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
+          <a href={lang === 'zh' ? '/zh/guides/' : '/guides/'} className="px-2 py-1.5 text-xs text-jev hover:underline">
+            {lang === 'zh' ? '指南' : 'Guides'}
+          </a>
           <div
             role="group"
             aria-label="Language / 语言"

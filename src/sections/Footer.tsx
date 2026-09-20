@@ -47,6 +47,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-10 border-t border-border pt-6 text-center font-mono text-xs text-muted-foreground">
+          <a href={lang === 'zh' ? '/zh/guides/' : '/guides/'} className="mb-4 block text-jev hover:underline">{lang === 'zh' ? 'Jev 使用指南' : 'Jev guides'}</a>
           {t.footer.bottom}
         </div>
       </div>

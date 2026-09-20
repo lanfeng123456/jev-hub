@@ -1,0 +1,189 @@
+[
+  {
+    "slug": "jev-api",
+    "sources": [
+      {"label": "TypeSafe quick start", "url": "https://docs.typesafe.ai/introduction/quickstart"},
+      {"label": "API reference", "url": "https://docs.typesafe.ai/api"},
+      {"label": "Choice", "url": "https://docs.typesafe.ai/primitives/choice"},
+      {"label": "Score", "url": "https://docs.typesafe.ai/primitives/score"},
+      {"label": "Noul", "url": "https://docs.typesafe.ai/primitives/noul"},
+      {"label": "Confidence", "url": "https://docs.typesafe.ai/confidence"}
+    ],
+    "en": {
+      "title": "Jev API Tutorial: TypeSafe Setup and First Request",
+      "description": "Make your first Jev API request with TypeSafe: authentication, a server-side JavaScript example, Choice, Score and Noul outputs, and common API errors.",
+      "category": "Developer guide",
+      "intro": "The Jev API evaluates typed questions against supplied context. Start with one business decision and inspect the returned values before wiring them into an automated workflow. This guide connects the TypeSafe docs to a small customer-support example.",
+      "answer": "Use POST https://api.typesafe.ai/v1/systemone with a Bearer API key. Send model, state and a questions object. Read the matching keys in answers; a Noul result is answers.<id>.noul, not a generated text response.",
+      "sections": [
+        {"id": "prepare", "title": "1. Prepare access and a small test case", "paragraphs": ["Open the official TypeSafe console and check that your account has access. Create your API key there, then store it as TYPESAFE_API_KEY in your server environment. The official quick start also provides a Playground for experimenting before writing code.", "Choose a short, unambiguous example first. For a billing ticket, separate the destination team, urgency and refund intent. These are different judgments; combining them into a single broad prompt makes it harder to inspect which part failed."], "bullets": ["The example below uses Node.js 18 or later and its built-in fetch.", "Keep the key on your server. A VITE_ environment variable or a script embedded in a webpage would expose it to visitors.", "Access and billing belong to your TypeSafe account; this community website cannot issue keys."]},
+        {"id": "request", "title": "2. Send a server-side JavaScript request", "paragraphs": ["This original example follows the documented request shape. Save it as quickstart.mjs and run it on your server after setting the environment variable. It logs decisions and token usage; it does not issue a refund or contact a customer.", "The endpoint and field names were checked against the official documentation on September 20, 2026. We did not run a paid inference request, so no particular prediction or latency is promised."], "codeKey": "quickstart"},
+        {"id": "answers", "title": "3. Read each primitive correctly", "table": {"headers": ["Primitive", "Use it for", "Read from the answer"], "rows": [["Choice", "One category from named alternatives", "choice, probabilities, confidence"], ["Score", "A position on an ordered rubric", "score, legend, probabilities, confidence"], ["Noul", "Whether a specific statement is true", "noul, between 0 and 1"]]}, "paragraphs": ["Score levels start at zero. Three criteria give a range from 0 to 2, and fractional scores are valid. Writing labels such as ‘1 = low’ does not change the underlying array positions.", "Noul does not have a separate confidence field. A value near 0 means a strong no; a value near 1 means a strong yes. For Choice and Score, confidence summarizes the distribution and is not interchangeable with the winning option’s probability."]},
+        {"id": "errors", "title": "4. Diagnose failures before retrying", "table": {"headers": ["HTTP status", "Next check"], "rows": [["401", "Check the API key and Authorization header."], ["422", "Inspect the validation response; check model, state and the questions map."], ["429", "Reduce concurrency and retry with backoff."], ["529", "The service is overloaded; retry later with backoff."]]}, "paragraphs": ["Avoid retrying every failure in a tight loop. Bound the number of retries, handle timeouts and retain a manual fallback. Do not log raw customer content or API keys merely to debug a routing failure."]},
+        {"id": "evaluate", "title": "5. Decide when automation is appropriate", "paragraphs": ["Build a labeled set containing ordinary tickets, ambiguous wording and requests outside your categories. Review wrong assignments as well as abstentions. Choose thresholds based on the cost of errors in that workflow; a threshold copied from a demo is only a hypothesis.", "Keep model-version information with your evaluation results. Recheck the same cases when a model or rubric changes. A correctly typed answer can still select the wrong team, and confidence does not replace authorization for the action your application takes."]}
+      ],
+      "faq": [
+        {"q": "Is /v1/decide the Jev endpoint?", "a": "The documentation checked for this guide specifies /v1/systemone. Use that endpoint and the documented questions object."},
+        {"q": "Can I call Jev directly from a React component?", "a": "Use a backend to hold the API key. The public browser bundle must not contain your TypeSafe credentials."},
+        {"q": "Do I need an SDK?", "a": "No. The HTTP API works with fetch or cURL. TypeSafe also documents Python and JavaScript SDKs."}
+      ]
+    },
+    "zh": {
+      "title": "Jev API 使用教程：TypeSafe 接入与首次请求",
+      "description": "从 TypeSafe 官方文档出发接入 Jev API：服务端 JavaScript 示例、API Key 配置、Choice、Score、Noul 返回值，以及常见报错排查。",
+      "category": "开发者指南",
+      "intro": "Jev API 会根据输入状态回答结构化问题。建议从一个边界清晰的业务判断开始，先观察返回值，再把它接入自动化流程。本教程以客服工单为例，解释官方接口如何落到实际代码中。",
+      "answer": "向 https://api.typesafe.ai/v1/systemone 发起 POST 请求，使用 Bearer API Key，传入 model、state 和 questions 对象。结果按问题键名放在 answers 中；Noul 的结果字段是 noul。",
+      "sections": [
+        {"id": "prepare", "title": "1. 准备访问权限和测试样例", "paragraphs": ["进入 TypeSafe 官方控制台，确认账号已经获得访问权限，然后创建 API Key。在服务端将它保存为 TYPESAFE_API_KEY 环境变量。官方快速开始文档也提供 Playground，可以先在那里测试问题。", "先选一个意思明确的短工单。把负责团队、紧急程度、退款意愿分成三个判断，分别查看结果，才能知道错误来自分类、评分还是问题定义。"], "bullets": ["下方示例使用 Node.js 18 及以上版本自带的 fetch。", "密钥只能保存在服务端，不要放进 VITE_ 环境变量或网页脚本。", "账号权限和计费由 TypeSafe 管理，本社区站无法代发 API Key。"]},
+        {"id": "request", "title": "2. 发起服务端 JavaScript 请求", "paragraphs": ["下面的原创示例使用官方文档中的请求结构。保存为 quickstart.mjs，配置环境变量后在服务端运行。代码只打印判断和用量，不会执行退款或向客户发送消息。", "接口与字段已于 2026 年 9 月 20 日核对官方文档。本次没有执行付费模型调用，因此不承诺示例会返回特定预测值或延迟。"], "codeKey": "quickstart"},
+        {"id": "answers", "title": "3. 正确读取三种返回值", "table": {"headers": ["类型", "适用问题", "结果字段"], "rows": [["Choice", "从指定选项中选择一个类别", "choice、probabilities、confidence"], ["Score", "在有序刻度上评分", "score、legend、probabilities、confidence"], ["Noul", "某个明确陈述是否为真", "noul，范围 0 到 1"]]}, "paragraphs": ["Score 从数组下标 0 开始计分，三个等级的范围就是 0 到 2，允许小数。即使等级描述写着“1 = 低”，也不会改变数组下标的编号方式。", "Noul 没有单独的 confidence 字段。接近 0 表示更倾向于否，接近 1 表示更倾向于是。Choice 和 Score 的 confidence 是对概率分布的概括，不应直接当作最高选项的概率。"]},
+        {"id": "errors", "title": "4. 先判断错误，再决定是否重试", "table": {"headers": ["HTTP 状态", "排查方向"], "rows": [["401", "检查 API Key 与 Authorization 请求头。"], ["422", "阅读校验错误，检查 model、state 和 questions 对象。"], ["429", "降低并发并采用退避重试。"], ["529", "服务暂时过载，稍后退避重试。"]]}, "paragraphs": ["不要把所有失败都放进无限重试循环。设置超时、重试次数上限和人工兜底。排查分流错误时，也不要顺手把密钥或完整客户信息写进日志。"]},
+        {"id": "evaluate", "title": "5. 用自己的数据确定自动化阈值", "paragraphs": ["测试集应包含普通工单、表达含糊的工单和不属于任何已知类别的工单。同时观察错分与转人工的比例。阈值应由错误成本决定，不能直接照搬演示里的某个小数。", "保留测试时的模型版本。模型或评分规则更新后，重新跑同一批样例。格式正确不代表选项正确，模型置信度也不能替代应用本身的操作授权。"]}
+      ],
+      "faq": [
+        {"q": "Jev 接口是 /v1/decide 吗？", "a": "本次核对的官方接口是 /v1/systemone。questions 应使用按问题名称组织的对象。"},
+        {"q": "能直接在 React 页面调用吗？", "a": "应通过自己的后端调用并保管密钥，不能把 TypeSafe 密钥打包进公开的浏览器代码。"},
+        {"q": "必须安装 SDK 吗？", "a": "不必，可以使用 fetch 或 cURL 调用 HTTP 接口。官方也提供 Python 和 JavaScript SDK 文档。"}
+      ]
+    }
+  },
+  {
+    "slug": "jev-access",
+    "sources": [
+      {"label": "TypeSafe official website", "url": "https://typesafe.ai/"},
+      {"label": "Official console", "url": "https://console.typesafe.ai/"},
+      {"label": "Quick start and SDK setup", "url": "https://docs.typesafe.ai/introduction/quickstart"},
+      {"label": "Current models and input support", "url": "https://docs.typesafe.ai/models"}
+    ],
+    "en": {
+      "title": "Jev AI Download, Waitlist and Official Access Guide",
+      "description": "Looking for a Jev AI download or waitlist? Find the official TypeSafe access route, understand SDK versus model downloads, and prepare your first test.",
+      "category": "Access guide",
+      "intro": "Searching for ‘Jev AI download’ can lead to several different expectations: a chat application, local model weights, or developer tools. The documented TypeSafe workflow is a hosted decision API, with a console and SDKs for developers.",
+      "answer": "Start at typesafe.ai or console.typesafe.ai. Check the access status shown for your account. The official pages reviewed on September 20, 2026 describe hosted API access; this guide has no verified Jev model-weight or desktop-app download to offer.",
+      "sections": [
+        {"id": "access", "title": "Where to get official access", "paragraphs": ["Use the official homepage’s access or sign-in controls. A console login and permission to use a model are separate things: being able to sign in does not guarantee that a key can immediately make inference requests.", "If your account shows a waitlist or pending access, follow the instructions there. We cannot verify an approval time or promise that every account is enabled. Return to the same official account when checking status rather than creating multiple applications."], "bullets": ["Official product site: typesafe.ai", "Official account console: console.typesafe.ai", "Official documentation: docs.typesafe.ai"]},
+        {"id": "download", "title": "An SDK download is not a model download", "table": {"headers": ["What you want", "What to look for"], "rows": [["Try a structured decision", "The official Playground after access is enabled"], ["Build an application", "An API key and the HTTP API or client SDK"], ["Run model weights offline", "A separately published weights release; none verified in this review"], ["Have a free-form conversation", "A text-generation assistant rather than this decision interface"]]}, "paragraphs": ["The documented Python package is typesafe-sdk. Installing a client library gives your code a way to contact the service; it does not download Jev’s weights or make the model run locally.", "Before installing anything advertised as a Jev app, check whether it is linked from the official product or documentation. A shared name, logo or search ranking alone does not establish who published it."]},
+        {"id": "prepare", "title": "What to prepare while access is pending", "paragraphs": ["You can design the decision without making API calls. Write down the input your application already has, the possible outcomes, and the condition that should send a case to a human. Then collect representative examples with your own expected answers.", "For a support workflow, distinguish billing from technical issues, include an ‘other’ category, and retain cases with missing information. This preparation makes the first API test useful: you are evaluating a proposed business rule rather than admiring a single impressive response."], "bullets": ["Use non-sensitive or anonymized sample records while prototyping.", "Keep the input small enough to review manually.", "Write a fallback for unavailable service or uncertain decisions before enabling automatic actions."]},
+        {"id": "first-test", "title": "After access is enabled", "paragraphs": ["Try one Noul question in the Playground, then reproduce it in a server-side API call. Compare the interpretation of the question with the intended business outcome before adding Choice or Score questions.", "The model documentation currently specifies text input, including structured text data. Convert images, audio or video into an appropriate text representation upstream if your application needs them; do not assume a media file can be sent directly.", "For non-English workflows, test examples in the language your users actually use. The model documentation notes stronger English performance, so an English demonstration is not a validation of a Chinese support queue."]}
+      ],
+      "faq": [
+        {"q": "Does joining the waitlist guarantee immediate access?", "a": "No approval time is verified here. The status and instructions in your official TypeSafe account take precedence."},
+        {"q": "Does pip install typesafe-sdk install Jev locally?", "a": "No. It installs a client for the hosted service, not model weights."},
+        {"q": "Can Jev Hub activate my account?", "a": "No. Jev Hub is an independent guide, not TypeSafe’s account or support system."}
+      ]
+    },
+    "zh": {
+      "title": "Jev AI 下载与候补名单：官方访问申请指南",
+      "description": "查找 Jev AI 下载、waitlist 和官方入口：区分托管 API、SDK 与模型权重，了解访问申请、账号状态以及获批前可准备的测试工作。",
+      "category": "访问指南",
+      "intro": "搜索“Jev AI 下载”时，可能想找聊天应用、离线模型，也可能只需要开发工具。目前官方文档介绍的主要方式是托管决策 API，通过控制台和 SDK 接入。",
+      "answer": "从 typesafe.ai 或 console.typesafe.ai 进入，以账号显示的访问状态为准。截至 2026 年 9 月 20 日，本次核对的官方资料介绍的是托管 API；本页没有经核实的 Jev 模型权重或桌面应用下载链接。",
+      "sections": [
+        {"id": "access", "title": "从哪里申请和查看访问状态", "paragraphs": ["使用官网上的申请入口或登录按钮。能够登录控制台与已经获得模型调用权限并不相同，登录成功也不等于 API Key 可以立即发起推理请求。", "如果账号显示候补或待开通，请按官方界面的说明操作。目前没有可核实的统一审批时间，也不能保证所有账号立即启用。查看进度时应回到同一个官方账号。"], "bullets": ["产品官网：typesafe.ai", "账号控制台：console.typesafe.ai", "开发文档：docs.typesafe.ai"]},
+        {"id": "download", "title": "下载 SDK 不等于下载模型", "table": {"headers": ["你的需求", "对应入口"], "rows": [["先试一个结构化判断", "访问权限开通后的官方 Playground"], ["接入自己的应用", "API Key、HTTP 接口或客户端 SDK"], ["离线运行模型权重", "需要单独发布的权重；本次未核实到此类发布"], ["自由聊天和生成长文", "使用文本生成助手，而非此决策接口"]]}, "paragraphs": ["官方 Python 客户端包名是 typesafe-sdk。安装客户端只让程序能调用服务，不会下载 Jev 权重，也不会让模型在本地运行。", "遇到所谓的 Jev 安装包时，先核对它是否由官方产品或文档链接推荐。名称相同、标志相似或搜索排名靠前，都不足以证明发布者身份。"]},
+        {"id": "prepare", "title": "等待开通时可以先做什么", "paragraphs": ["无需调用接口，也可以先设计业务判断：列出输入、允许的输出、转人工的条件，再准备带有预期答案的真实场景样例。", "例如客服分流，应区分账单与技术问题，加入“其他”类别，并保留信息不足的案例。这样首次测试是在验证业务规则，而不是只看某条回复是否惊艳。"], "bullets": ["原型阶段使用不敏感或经过匿名化的记录。", "先用容易人工复核的短输入。", "自动执行前，先设计服务不可用和模型不确定时的处理方式。"]},
+        {"id": "first-test", "title": "开通后先做小规模验证", "paragraphs": ["先在 Playground 里测试一个 Noul 问题，再用服务端 API 重现。确认问题表达符合业务意图后，逐步增加 Choice 和 Score。", "当前模型文档注明输入是文本，可包含结构化文本数据。如果业务涉及图片、音频或视频，应先在上游转成合适的文字表示，不能默认模型支持直接读取媒体文件。", "中文业务应使用中文样例验证。官方说明英语表现相对更强，因此英文演示的结果不能代替中文工单测试。"]}
+      ],
+      "faq": [
+        {"q": "加入 waitlist 后多久开通？", "a": "本页没有可核实的审批时长。请以官方账号内的状态和说明为准。"},
+        {"q": "pip install typesafe-sdk 会把 Jev 装到本地吗？", "a": "不会，它安装的是托管服务的客户端，不是模型权重。"},
+        {"q": "Jev Hub 能帮我激活账号吗？", "a": "不能。本网站是独立指南，不是 TypeSafe 的账号或客服系统。"}
+      ]
+    }
+  },
+  {
+    "slug": "jev-pricing",
+    "sources": [
+      {"label": "TypeSafe model pricing and limits", "url": "https://docs.typesafe.ai/models"},
+      {"label": "API token usage and error handling", "url": "https://docs.typesafe.ai/api"},
+      {"label": "Official Jev announcement", "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev"}
+    ],
+    "en": {
+      "title": "Jev Pricing: TypeSafe API Costs and Token Examples",
+      "description": "Understand Jev API pricing with worked token-cost examples, the difference between free output and free use, and the operational costs a budget should include.",
+      "category": "Cost guide",
+      "intro": "Jev’s low per-token price is easy to confuse with a free service or a fixed price per request. This guide turns the published input-token rate into a workload estimate and explains what that estimate leaves out.",
+      "answer": "As checked on September 20, 2026, TypeSafe lists Jev input at $0.042 per million tokens, equivalent to $42 per billion. Output tokens are listed as free. That is a token rate, not a promise of free API access or a fixed cost for every decision.",
+      "sections": [
+        {"id": "formula", "title": "Estimate cost from measured input tokens", "paragraphs": ["Use the input_tokens value reported by your own requests. For planning, multiply requests by average input tokens, divide by one million, then multiply by $0.042. The examples below assume 1,000 input tokens per request and the published rate; they are arithmetic examples, not measured bills."], "table": {"headers": ["Requests", "Assumed input tokens", "Estimated input cost (USD)"], "rows": [["1,000", "1 million", "$0.042"], ["10,000", "10 million", "$0.42"], ["100,000", "100 million", "$4.20"], ["1,000,000", "1 billion", "$42.00"]]}},
+        {"id": "budget", "title": "Budget for the workflow, not just one call", "paragraphs": ["A user action may cause several model calls. A routing step, a second verification and a retry all affect the total. Measure the number of calls per completed task instead of assuming that one visitor produces one request.", "Model charges are only one line of a production budget. Your backend, data preparation, logging and human review can cost more than inference. Track them separately so that a low model rate does not hide a more expensive operating process."], "bullets": ["Measure the average and high-percentile input size from representative tasks.", "Include unsuccessful attempts and retries when estimating call volume; confirm actual billing treatment in your account.", "Compare cost per correctly completed task and review workload, not only cost per token."]},
+        {"id": "free", "title": "Free output tokens do not mean unlimited free use", "paragraphs": ["The published output-token price does not remove input charges. This guide does not verify any permanent free tier, signup-credit allowance or minimum account spend. Check the official console before budgeting around promotional terms.", "Likewise, a price table does not guarantee that an account is already approved. Access, account limits and billing settings need to be checked separately. Contact TypeSafe for contractual or enterprise terms rather than extrapolating them from a public example."]},
+        {"id": "limits", "title": "Plan for limits and changing model versions", "paragraphs": ["Request limits and context limits are different constraints: the first controls throughput, while the second controls what fits into one call. The official models page warns that rate limits can change during the rollout, so copy current values from that page when configuring production capacity.", "For repeatable cost comparisons, record the resolved model version, input usage and date. A moving alias such as jev-latest can change over time. Repeat your sample when prompts, input size or model versions change instead of treating this page’s example as a permanent quote."]},
+        {"id": "compare", "title": "How to compare Jev with another model fairly", "paragraphs": ["Use the same input records and require equivalent outputs. If one model supplies probabilities and another only returns a label, the two results serve different workflows. Decide which output you actually need before calculating savings.", "Count errors that need manual correction. Saving a small amount on inference is not useful if incorrect routing consumes more staff time. Start with a replay of a fixed sample and compare total cost, latency, decision quality and the fraction sent to review."]}
+      ],
+      "faq": [
+        {"q": "What would 100,000 calls with 1,000 input tokens each cost?", "a": "At the checked rate, the input-token estimate is $4.20. It excludes other services and assumes the stated token count and rate."},
+        {"q": "Is $42 charged per million tokens?", "a": "No. The published figures are $42 per billion input tokens or $0.042 per million."},
+        {"q": "Is this a guaranteed quote?", "a": "No. It is a dated explanation of published pricing. Current official pricing and your account terms take precedence."}
+      ]
+    },
+    "zh": {
+      "title": "Jev 价格与费用：TypeSafe API Token 成本计算",
+      "description": "解释 Jev API 输入 Token 价格、输出免费与免费使用的区别，用计算示例估算调用费用，并核对重试、人工复核和系统运行成本。",
+      "category": "成本指南",
+      "intro": "低 Token 单价很容易被误读为永久免费，或固定每次调用收费。本页把官方输入单价换算成可理解的业务估算，并说明估算没有包含哪些费用。",
+      "answer": "截至 2026 年 9 月 20 日，官方列出的 Jev 输入价格为每百万 Token 0.042 美元，也就是每十亿 Token 42 美元；输出 Token 免费。这是用量单价，不代表无限免费调用或每次判断费用相同。",
+      "sections": [
+        {"id": "formula", "title": "用实际输入 Token 估算费用", "paragraphs": ["优先记录请求返回的 input_tokens。规划时可以按“请求次数 × 平均输入 Token ÷ 1,000,000 × 0.042 美元”计算。下表假设每次请求恰好使用 1,000 个输入 Token，仅为算术示例，不是实测账单。"], "table": {"headers": ["调用次数", "假设输入 Token 总量", "预计输入费用（美元）"], "rows": [["1,000", "100 万", "$0.042"], ["10,000", "1,000 万", "$0.42"], ["100,000", "1 亿", "$4.20"], ["1,000,000", "10 亿", "$42.00"]]}},
+        {"id": "budget", "title": "预算要覆盖完整工作流", "paragraphs": ["一次用户操作可能引发多次模型调用：分流、复核和失败重试都会影响总量。应统计每个完成的业务任务用了多少次调用，而不是默认一个访客对应一次请求。", "模型费用只是生产预算的一部分。后端、数据预处理、日志和人工审核可能比推理更贵，应分开记录，避免低模型单价掩盖运营成本。"], "bullets": ["用代表性任务测量平均输入长度与较长输入的分布。", "估算请求总量时计入失败和重试，并在账号中确认实际计费规则。", "比较每个正确完成任务的成本和人工审核量，不只比较 Token 单价。"]},
+        {"id": "free", "title": "输出免费不等于无限免费使用", "paragraphs": ["输出 Token 不收费，不会取消输入费用。本页没有核实到可永久承诺的免费额度、注册赠金或最低消费政策，预算不能建立在未经确认的优惠上。", "公开价格也不代表账号已经获得调用权限。访问状态、额度和计费设置需要分别查看；企业合同条件应向 TypeSafe 确认，不能从公开示例自行推导。"]},
+        {"id": "limits", "title": "注意速率限制和模型版本变化", "paragraphs": ["速率限制决定单位时间能发多少请求，上下文限制决定一次能放多少内容。官方模型页说明上线阶段的速率限制可能调整，配置生产容量时应以当时官方数值为准。", "要复现成本比较，请记录解析后的模型版本、输入用量和测试日期。jev-latest 这样的别名可能指向新版本。提示词、输入长度或模型变化后，应重新抽样测量。"]},
+        {"id": "compare", "title": "怎样与其他模型公平比较", "paragraphs": ["采用同一批输入，并要求可比较的输出。如果一个方案返回概率分布，另一个只返回标签，它们服务的业务需求就不完全相同，应先统一需求。", "把错误后人工修正的成本也算进去。低推理费不一定能抵消错误分流造成的人力消耗。用固定样本比较总成本、延迟、正确率和转人工比例，才更接近实际收益。"]}
+      ],
+      "faq": [
+        {"q": "每次 1,000 输入 Token，调用十万次多少钱？", "a": "按本次核对的价格，输入 Token 估算为 4.20 美元，不包含其他服务，并假设实际用量和价格符合上述条件。"},
+        {"q": "42 美元是每百万 Token 的价格吗？", "a": "不是。42 美元对应十亿输入 Token；每百万输入 Token 是 0.042 美元。"},
+        {"q": "这是保证不变的报价吗？", "a": "不是，这是对核对当日公开价格的解释。请以最新官方价格和账号条款为准。"}
+      ]
+    }
+  },
+  {
+    "slug": "jev-benchmarks",
+    "sources": [
+      {"label": "Official announcement: results and limitations", "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev"},
+      {"label": "System One concepts", "url": "https://docs.typesafe.ai/concepts/system-one"},
+      {"label": "Confidence and probabilities", "url": "https://docs.typesafe.ai/confidence"},
+      {"label": "Current model versions", "url": "https://docs.typesafe.ai/models"}
+    ],
+    "en": {
+      "title": "Jev Benchmarks Explained: Speed, Cost and Limitations",
+      "description": "Read TypeSafe Jev benchmark claims in context: workflow comparisons, latency, typed outputs, confidence, and a practical checklist for your own evaluation.",
+      "category": "Evaluation guide",
+      "intro": "A large speedup is meaningful only after you know the task, baseline and output requirements. Jev benchmarks concern structured decisions inside workflows. They do not establish that Jev replaces a general-purpose assistant for every task.",
+      "answer": "TypeSafe’s launch material reports 193.6× faster and 444.6× cheaper results from selected System One workflows. These are vendor-reported results, not measurements performed by Jev Hub or guarantees for your application.",
+      "sections": [
+        {"id": "claims", "title": "What the published numbers do—and do not—say", "table": {"headers": ["Published claim", "How to interpret it"], "rows": [["193.6× speed and 444.6× cost improvements", "Results from the vendor’s workflow evaluation, not a universal multiplier"], ["70–500 ms response time", "A published range; measure your region, payload and concurrency"], ["No type errors", "The output stays within its defined structure; the decision can still be wrong"]]}, "paragraphs": ["The launch article discloses that its team designed the evaluated workflows and that demonstrations favor some input shapes. Read those limitations alongside the headline. A short-input demo should not be treated as proof of identical performance on long documents.", "Jev produces typed decisions; a text model may generate and validate a structured response. Your comparison must specify whether probabilities, reasoning and additional validation are required on both sides."]},
+        {"id": "fit", "title": "Choose a task that matches the interface", "paragraphs": ["Ticket routing, bounded classification and scoring are natural candidates because the application already knows the allowed outcomes. Open-ended writing needs a different output: a decision API cannot replace an article generator simply by returning a label.", "A useful mixed system can use a decision model to choose a workflow and a text model to draft a response. Evaluate each step separately, then measure the complete user-visible task. A faster router may have little effect if the slowest step is elsewhere."]},
+        {"id": "protocol", "title": "A repeatable evaluation protocol", "bullets": ["Freeze a sample of representative inputs before tuning prompts. Include ambiguous and out-of-scope cases.", "Define expected outcomes and the cost of false positives, false negatives and manual review.", "Use equivalent inputs and required outputs for each model; document any reasoning or probability requirement.", "Record the model version, region, concurrency, retries and input size for every run.", "Report median and p95 latency, failures, decision quality and cost per successfully completed task.", "Keep a separate held-out sample to check whether improvements survive outside the tuning examples."], "paragraphs": ["If you cannot label every example reliably, start by reviewing disagreements. Do not silently treat another model’s answer as ground truth. Human adjudication may also be uncertain, and that uncertainty belongs in your result interpretation."]},
+        {"id": "confidence", "title": "Evaluate uncertainty as well as accuracy", "paragraphs": ["Test how many cases the system can automate at an acceptable error rate, and how many it must defer. A model that reports uncertainty can be useful even when it does not answer every case automatically.", "Keep confidence distinct from probability. In the TypeSafe interface, Choice and Score supply a confidence summary; Noul supplies the probability of yes. Review the distribution and errors at your proposed thresholds rather than reading a high number as a guarantee."]},
+        {"id": "decision", "title": "Make the deployment decision from your results", "paragraphs": ["Before rollout, choose an error budget and a rollback condition. Observe the system in shadow mode, compare proposed actions to the existing process, and then enable a limited, reversible workflow if the evidence supports it.", "Re-evaluate after a change to the model version, input language or business rubric. Record exactly what changed so that a future speed or accuracy regression can be investigated. This is more useful than repeating a vendor multiplier on an unrelated workload."]}
+      ],
+      "faq": [
+        {"q": "Did Jev Hub reproduce these benchmark numbers?", "a": "No. This page explains the vendor’s published results and provides an independent evaluation checklist. No new comparative benchmark was run."},
+        {"q": "Does type safety mean every answer is correct?", "a": "No. A result can fit the requested schema while choosing the wrong option or assigning an unsuitable score."},
+        {"q": "Should I expect a 193.6× speedup?", "a": "Not without measuring your own workload. Payload, region, baseline configuration and the surrounding workflow all affect the result."}
+      ]
+    },
+    "zh": {
+      "title": "Jev 性能评测解读：速度、成本与能力边界",
+      "description": "解读 TypeSafe Jev benchmarks：官方速度与成本数字的适用条件、类型安全与正确率的区别，以及可复现的业务评测清单。",
+      "category": "评测指南",
+      "intro": "评测里的倍数只有放回任务、对照模型和输出要求中才有意义。Jev 的这组结果针对工作流里的结构化决策，不能直接推导它能替代所有通用聊天或生成任务。",
+      "answer": "TypeSafe 发布资料给出的 193.6 倍速度和 444.6 倍成本优势来自特定 System One 工作流评测。这些是官方报告的结果，不是 Jev Hub 实测，也不是对你的业务性能作出的保证。",
+      "sections": [
+        {"id": "claims", "title": "公开数字应该怎样理解", "table": {"headers": ["官方表述", "阅读时需要的上下文"], "rows": [["速度 193.6 倍、成本 444.6 倍优势", "来自官方工作流评测，不能作为所有任务的固定倍数"], ["70–500ms 响应时间", "公开区间，应重新测量自己的地域、负载和并发"], ["无类型错误", "输出符合定义的结构，不代表业务判断永远正确"]]}, "paragraphs": ["发布文章说明评测工作流由团队成员设计，演示也有对某些输入更有利的条件。阅读标题数字时应同时阅读这些限制，不能把短输入演示直接外推到长文档。", "Jev 返回类型化判断，文本模型可能还需要生成、解析并校验结构化内容。对比时必须说明两边是否都需要概率、推理和额外校验。"]},
+        {"id": "fit", "title": "先选适合这个接口的任务", "paragraphs": ["工单分流、有限类别的分类和评分比较适合，因为应用已经知道允许的输出。开放式写作需要的是文本，不能仅返回标签就替代文章生成器。", "也可以让决策模型选择工作流，再让文本模型起草回复。分别测量各步骤，最后再测量用户看到的完整流程。如果最慢的环节在别处，分流变快不一定显著缩短总耗时。"]},
+        {"id": "protocol", "title": "可复现的评测步骤", "bullets": ["调提示词前固定样本，包含普通、含糊和超出分类范围的输入。", "明确预期输出，以及误报、漏报和人工复核的成本。", "给不同模型相同输入和可比较的输出要求，写清推理与概率要求。", "记录模型版本、地域、并发、重试次数和输入长度。", "报告中位数、p95 延迟、失败率、判断质量和每个完成任务的成本。", "保留独立测试集，确认提升不只发生在调参用过的样例上。"], "paragraphs": ["无法可靠标注所有输入时，可以先人工复核模型之间的分歧。不要直接把另一个模型的答案当作标准答案。人工判断也可能存在不确定性，报告中应保留这部分限制。"]},
+        {"id": "confidence", "title": "除了正确率，也要评估不确定性", "paragraphs": ["在可接受错误率下，系统能自动处理多少案例，又需要转人工多少案例，这通常比单独一个总正确率更有业务意义。能够表达不确定性的模型，即使不自动处理所有案例，也可能有价值。", "不要混淆 confidence 和 probability。Choice、Score 有置信度概括，Noul 返回“是”的概率。应观察阈值附近的分布和错误案例，不能把一个较高数字理解为保证。"]},
+        {"id": "decision", "title": "用自己的结果决定是否上线", "paragraphs": ["上线前先定义错误预算和回退条件。可以先以影子模式运行，只记录拟执行动作，与现有流程比较；证据充分后，再启用范围有限且可撤回的自动化。", "模型版本、输入语言和业务规则发生变化后应重新评估，并记录变化内容。这样后续性能退化才有线索可查，比在无关任务上重复引用官方倍数更实用。"]}
+      ],
+      "faq": [
+        {"q": "Jev Hub 是否复现了这些评测数字？", "a": "没有。本页解释官方发布结果并提供评测清单，没有执行新的模型对比测试。"},
+        {"q": "类型安全代表回答一定正确吗？", "a": "不代表。返回值可以符合结构要求，同时仍然选错类别或给出不合适的评分。"},
+        {"q": "我的应用也能快 193.6 倍吗？", "a": "必须实测才能判断。输入、地域、对照配置和周边流程都会影响速度。"}
+      ]
+    }
+  }
+]

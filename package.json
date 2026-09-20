@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node scripts/generate-guides.mjs && vite",
+    "build": "node scripts/generate-guides.mjs && tsc -b && vite build",
     "lint": "eslint .",
+    "verify:guides": "node scripts/verify-guides.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

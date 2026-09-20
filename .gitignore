@@ -4,3 +4,7 @@ dist
 .DS_Store
 
 .vercel
+
+# Generated from content/guides.json before dev/build.
+/public/guides/
+/public/zh/guides/

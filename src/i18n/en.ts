@@ -1,3 +1,4 @@
+import quickstartExample from '../../content/examples/quickstart.txt?raw'
 import type { Messages } from './zh'
 
 // English dictionary. Must satisfy the `Messages` contract from zh.ts.
@@ -142,50 +143,9 @@ export const en: Messages = {
       { n: '03', title: 'Make the call', desc: 'Send the task state plus multiple questions in one request; typed results come back within 70–500ms.' },
       { n: '04', title: 'Consume results with if statements', desc: 'Results are structured values: branch on options, route by thresholds, and fall back to humans on low confidence.' },
     ],
-    codeFile: 'decide.ts · three questions in one call',
-    codeBadge: 'Illustrative code',
-    code: `// ⚠️ Illustrative code: shows the call shape only — see official docs for API details
-const res = await fetch('https://api.typesafe.ai/v1/decide', {
-  method: 'POST',
-  headers: {
-    'Authorization': \`Bearer \${process.env.TYPESAFE_API_KEY}\`,
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    // Current state of the task/workflow (no text generation, state in only)
-    state: { ticket: 'I was charged twice for my order — what is going on?!' },
-    questions: [
-      {
-        id: 'team',
-        type: 'choice',                    // Choice: up to 255 options
-        question: 'Which team should handle this ticket?',
-        options: ['billing', 'tech_support', 'sales', 'other'],
-      },
-      {
-        id: 'anger',
-        type: 'score',                     // Score: 2–10 level verbal scale
-        question: 'How angry is the customer right now?',
-        scale: ['1 = calm', '2 = annoyed', '3 = frustrated', '4 = angry', '5 = furious'],
-      },
-      {
-        id: 'refund',
-        type: 'noul',                      // Noul: yes/no assertion → 0–1 probability
-        question: 'Did the customer explicitly request a refund?',
-      },
-    ],
-  }),
-})
-
-const { answers } = await res.json()
-
-// Consume the result like an if statement — output never leaves the type space
-if (answers.refund.probability > 0.9 && answers.anger.score >= 3) {
-  escalateToHuman(answers)               // High refund intent + high anger → human
-} else if (answers.team.confidence < 0.7) {
-  routeToTriageQueue()                   // Insufficient confidence → manual triage
-} else {
-  assignToTeam(answers.team.choice)      // Auto-route to the right team
-}`,
+    codeFile: 'quickstart.mjs · Node.js 18+',
+    codeBadge: 'Documented API shape',
+    code: quickstartExample,
     tipsTitle: 'Best practices',
     tips: [
       "Ask one specific, well-bounded judgment per question — like a domain expert's split-second intuition, not an analysis report.",

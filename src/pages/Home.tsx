@@ -8,6 +8,7 @@ import Cases from '../sections/Cases'
 import VideoWall from '../sections/VideoWall'
 import Faq from '../sections/Faq'
 import Footer from '../sections/Footer'
+import Guides from '../sections/Guides'
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
         <Primitives />
         <Advantages />
         <QuickStart />
+        <Guides />
         <Cases />
         <VideoWall />
         <Faq />

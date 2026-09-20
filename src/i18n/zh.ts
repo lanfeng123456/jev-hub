@@ -1,3 +1,4 @@
+import quickstartExample from '../../content/examples/quickstart.txt?raw'
 // Chinese (default) dictionary. The shape of this object is the contract:
 // `en.ts` (and any future language such as `ja.ts`) must satisfy `Messages`.
 export const zh = {
@@ -136,50 +137,9 @@ export const zh = {
       { n: '03', title: '发起调用', desc: '一次请求传入任务状态 + 多个问题，70–500ms 内返回类型化结果。' },
       { n: '04', title: '用 if 语句消费结果', desc: '结果就是结构化值：按选项分支、按阈值路由，低置信度回落人工。' },
     ],
-    codeFile: 'decide.ts · 一次调用问三个问题',
-    codeBadge: '示意代码',
-    code: `// ⚠️ 示意代码：仅演示调用形态，API 细节以官方文档为准
-const res = await fetch('https://api.typesafe.ai/v1/decide', {
-  method: 'POST',
-  headers: {
-    'Authorization': \`Bearer \${process.env.TYPESAFE_API_KEY}\`,
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    // 任务/工作流的当前状态（不生成文本，只消费状态）
-    state: { ticket: '我的订单被扣了两次款，你们到底怎么回事？！' },
-    questions: [
-      {
-        id: 'team',
-        type: 'choice',                    // Choice：最多 255 个选项
-        question: '这封工单应该分给哪个团队？',
-        options: ['billing', 'tech_support', 'sales', 'other'],
-      },
-      {
-        id: 'anger',
-        type: 'score',                     // Score：2–10 级文字刻度
-        question: '客户现在有多生气？',
-        scale: ['1 = 平静', '2 = 不满', '3 = 恼火', '4 = 愤怒', '5 = 暴怒'],
-      },
-      {
-        id: 'refund',
-        type: 'noul',                      // Noul：是/否断言 → 0~1 概率
-        question: '客户是否明确要求退款？',
-      },
-    ],
-  }),
-})
-
-const { answers } = await res.json()
-
-// 像用 if 语句一样消费结果——输出永远在类型空间内
-if (answers.refund.probability > 0.9 && answers.anger.score >= 3) {
-  escalateToHuman(answers)               // 高退款意愿 + 高怒气 → 人工介入
-} else if (answers.team.confidence < 0.7) {
-  routeToTriageQueue()                   // 置信度不足 → 回落人工分流
-} else {
-  assignToTeam(answers.team.choice)      // 自动路由到对应团队
-}`,
+    codeFile: 'quickstart.mjs · Node.js 18+',
+    codeBadge: '官方接口结构',
+    code: quickstartExample,
     tipsTitle: '最佳实践',
     tips: [
       '每个问题只问一个具体、边界清晰的判断——像领域专家几秒钟的直觉，而不是一篇分析报告。',
